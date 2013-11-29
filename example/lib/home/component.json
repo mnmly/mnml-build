@@ -2,5 +2,8 @@
   "name": "home",
   "scripts":[
     "index.js"
+  ],
+  "styles": [
+    "home.styl"
   ]
 }

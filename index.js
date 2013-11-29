@@ -9,6 +9,7 @@ var jade = require('component-jade');
 
 var reworkVars = require('rework-vars');
 var reworkMath = require('rework-math');
+var reworkClearfix = require('rework-clearfix');
 var mkdir = require('mkdirp');
 
 var fs = require('fs');
@@ -63,7 +64,7 @@ var build = exports.build = function(fn) {
        * Plugins
        */
 
-      styl.plugins = [reworkMath(), reworkVars()];
+      styl.plugins = [reworkMath(), reworkVars(), reworkClearfix];
       builder.use(styl);
       builder.use(jade);
       
