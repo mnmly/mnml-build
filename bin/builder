@@ -4,7 +4,7 @@
  * Module Dependencies
  */
 
-var build = require('./').build;
+var build = require('./');
 
 /**
  * Build
