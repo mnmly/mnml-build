@@ -1,0 +1,14 @@
+{
+  "name": "mnml-build",
+  "version": "0.0.1",
+  "dependencies": {
+    "mkdirp": "*",
+    "rework-vars": "*",
+    "rework-math": "*",
+    "component-builder": "*",
+    "component-styl": "*",
+    "component-jade": "*",
+    "batch": "*",
+    "express": "~3.4.4"
+  }
+}

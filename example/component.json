@@ -1,0 +1,9 @@
+{
+  "name": "dummy",
+  "paths": [
+    "lib"
+  ],
+  "local": [
+    "home"
+  ]
+}
