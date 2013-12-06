@@ -20,7 +20,6 @@ var meta = JSON.parse(read(process.cwd() + '/component.json'));
 var bundles = meta.local;
 var Batch = require('batch');
 var out = 'build';
-var dev = true;
 
 /**
  * Component builder middleware.
@@ -28,7 +27,7 @@ var dev = true;
 
 exports = module.exports = function(req, res, next){
   if (/build/.test(req.url)) {
-    return build(next);
+    return build(next, true);
   } else {
     next();
   }
@@ -38,7 +37,7 @@ exports = module.exports = function(req, res, next){
  * Build with bundle
  */
 
-var build = exports.build = function(fn) {
+var build = exports.build = function(fn, dev) {
 
   var batch = new Batch();
 

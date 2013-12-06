@@ -5,6 +5,7 @@
  */
 
 var build = require('./../').build;
+var dev = '--dev' === process.argv[2];
 
 /**
  * Build
@@ -13,4 +14,4 @@ var build = require('./../').build;
 build(function(e) {
   if (e) process.stderr.write(e);
   else process.stdout.write('successfully built components\n');
-});
+}, dev);

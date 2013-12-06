@@ -199,201 +199,196 @@ require.relative = function(parent) {
 
   return localRequire;
 };
-require.register("home/index.js", Function("exports, require, module",
-"module.exports = Home;\n\
-\n\
-function Home(){\n\
-  console.log('Home');\n\
-}\n\
-\n\
-//@ sourceURL=home/index.js"
-));
-require.register("dummy/jade-runtime.js", Function("exports, require, module",
-"\n\
-jade = (function(exports){\n\
-/*!\n\
- * Jade - runtime\n\
- * Copyright(c) 2010 TJ Holowaychuk <tj@vision-media.ca>\n\
- * MIT Licensed\n\
- */\n\
-\n\
-/**\n\
- * Lame Array.isArray() polyfill for now.\n\
- */\n\
-\n\
-if (!Array.isArray) {\n\
-  Array.isArray = function(arr){\n\
-    return '[object Array]' == Object.prototype.toString.call(arr);\n\
-  };\n\
-}\n\
-\n\
-/**\n\
- * Lame Object.keys() polyfill for now.\n\
- */\n\
-\n\
-if (!Object.keys) {\n\
-  Object.keys = function(obj){\n\
-    var arr = [];\n\
-    for (var key in obj) {\n\
-      if (obj.hasOwnProperty(key)) {\n\
-        arr.push(key);\n\
-      }\n\
-    }\n\
-    return arr;\n\
-  }\n\
-}\n\
-\n\
-/**\n\
- * Merge two attribute objects giving precedence\n\
- * to values in object `b`. Classes are special-cased\n\
- * allowing for arrays and merging/joining appropriately\n\
- * resulting in a string.\n\
- *\n\
- * @param {Object} a\n\
- * @param {Object} b\n\
- * @return {Object} a\n\
- * @api private\n\
- */\n\
-\n\
-exports.merge = function merge(a, b) {\n\
-  var ac = a['class'];\n\
-  var bc = b['class'];\n\
-\n\
-  if (ac || bc) {\n\
-    ac = ac || [];\n\
-    bc = bc || [];\n\
-    if (!Array.isArray(ac)) ac = [ac];\n\
-    if (!Array.isArray(bc)) bc = [bc];\n\
-    ac = ac.filter(nulls);\n\
-    bc = bc.filter(nulls);\n\
-    a['class'] = ac.concat(bc).join(' ');\n\
-  }\n\
-\n\
-  for (var key in b) {\n\
-    if (key != 'class') {\n\
-      a[key] = b[key];\n\
-    }\n\
-  }\n\
-\n\
-  return a;\n\
-};\n\
-\n\
-/**\n\
- * Filter null `val`s.\n\
- *\n\
- * @param {Mixed} val\n\
- * @return {Mixed}\n\
- * @api private\n\
- */\n\
-\n\
-function nulls(val) {\n\
-  return val != null;\n\
-}\n\
-\n\
-/**\n\
- * Render the given attributes object.\n\
- *\n\
- * @param {Object} obj\n\
- * @param {Object} escaped\n\
- * @return {String}\n\
- * @api private\n\
- */\n\
-\n\
-exports.attrs = function attrs(obj, escaped){\n\
-  var buf = []\n\
-    , terse = obj.terse;\n\
-\n\
-  delete obj.terse;\n\
-  var keys = Object.keys(obj)\n\
-    , len = keys.length;\n\
-\n\
-  if (len) {\n\
-    buf.push('');\n\
-    for (var i = 0; i < len; ++i) {\n\
-      var key = keys[i]\n\
-        , val = obj[key];\n\
-\n\
-      if ('boolean' == typeof val || null == val) {\n\
-        if (val) {\n\
-          terse\n\
-            ? buf.push(key)\n\
-            : buf.push(key + '=\"' + key + '\"');\n\
-        }\n\
-      } else if (0 == key.indexOf('data') && 'string' != typeof val) {\n\
-        buf.push(key + \"='\" + JSON.stringify(val) + \"'\");\n\
-      } else if ('class' == key && Array.isArray(val)) {\n\
-        buf.push(key + '=\"' + exports.escape(val.join(' ')) + '\"');\n\
-      } else if (escaped && escaped[key]) {\n\
-        buf.push(key + '=\"' + exports.escape(val) + '\"');\n\
-      } else {\n\
-        buf.push(key + '=\"' + val + '\"');\n\
-      }\n\
-    }\n\
-  }\n\
-\n\
-  return buf.join(' ');\n\
-};\n\
-\n\
-/**\n\
- * Escape the given string of `html`.\n\
- *\n\
- * @param {String} html\n\
- * @return {String}\n\
- * @api private\n\
- */\n\
-\n\
-exports.escape = function escape(html){\n\
-  return String(html)\n\
-    .replace(/&(?!(\\w+|\\#\\d+);)/g, '&amp;')\n\
-    .replace(/</g, '&lt;')\n\
-    .replace(/>/g, '&gt;')\n\
-    .replace(/\"/g, '&quot;');\n\
-};\n\
-\n\
-/**\n\
- * Re-throw the given `err` in context to the\n\
- * the jade in `filename` at the given `lineno`.\n\
- *\n\
- * @param {Error} err\n\
- * @param {String} filename\n\
- * @param {String} lineno\n\
- * @api private\n\
- */\n\
-\n\
-exports.rethrow = function rethrow(err, filename, lineno){\n\
-  if (!filename) throw err;\n\
-\n\
-  var context = 3\n\
-    , str = require('fs').readFileSync(filename, 'utf8')\n\
-    , lines = str.split('\\n\
-')\n\
-    , start = Math.max(lineno - context, 0)\n\
-    , end = Math.min(lines.length, lineno + context);\n\
-\n\
-  // Error context\n\
-  var context = lines.slice(start, end).map(function(line, i){\n\
-    var curr = i + start + 1;\n\
-    return (curr == lineno ? '  > ' : '    ')\n\
-      + curr\n\
-      + '| '\n\
-      + line;\n\
-  }).join('\\n\
-');\n\
-\n\
-  // Alter exception message\n\
-  err.path = filename;\n\
-  err.message = (filename || 'Jade') + ':' + lineno\n\
-    + '\\n\
-' + context + '\\n\
-\\n\
-' + err.message;\n\
-  throw err;\n\
-};\n\
-\n\
-  return exports;\n\
-\n\
-})({});//@ sourceURL=dummy/jade-runtime.js"
-));
+require.register("home/index.js", function(exports, require, module){
+module.exports = Home;
+
+function Home(){
+  console.log('Home');
+}
+
+
+});
+require.register("dummy/jade-runtime.js", function(exports, require, module){
+
+jade = (function(exports){
+/*!
+ * Jade - runtime
+ * Copyright(c) 2010 TJ Holowaychuk <tj@vision-media.ca>
+ * MIT Licensed
+ */
+
+/**
+ * Lame Array.isArray() polyfill for now.
+ */
+
+if (!Array.isArray) {
+  Array.isArray = function(arr){
+    return '[object Array]' == Object.prototype.toString.call(arr);
+  };
+}
+
+/**
+ * Lame Object.keys() polyfill for now.
+ */
+
+if (!Object.keys) {
+  Object.keys = function(obj){
+    var arr = [];
+    for (var key in obj) {
+      if (obj.hasOwnProperty(key)) {
+        arr.push(key);
+      }
+    }
+    return arr;
+  }
+}
+
+/**
+ * Merge two attribute objects giving precedence
+ * to values in object `b`. Classes are special-cased
+ * allowing for arrays and merging/joining appropriately
+ * resulting in a string.
+ *
+ * @param {Object} a
+ * @param {Object} b
+ * @return {Object} a
+ * @api private
+ */
+
+exports.merge = function merge(a, b) {
+  var ac = a['class'];
+  var bc = b['class'];
+
+  if (ac || bc) {
+    ac = ac || [];
+    bc = bc || [];
+    if (!Array.isArray(ac)) ac = [ac];
+    if (!Array.isArray(bc)) bc = [bc];
+    ac = ac.filter(nulls);
+    bc = bc.filter(nulls);
+    a['class'] = ac.concat(bc).join(' ');
+  }
+
+  for (var key in b) {
+    if (key != 'class') {
+      a[key] = b[key];
+    }
+  }
+
+  return a;
+};
+
+/**
+ * Filter null `val`s.
+ *
+ * @param {Mixed} val
+ * @return {Mixed}
+ * @api private
+ */
+
+function nulls(val) {
+  return val != null;
+}
+
+/**
+ * Render the given attributes object.
+ *
+ * @param {Object} obj
+ * @param {Object} escaped
+ * @return {String}
+ * @api private
+ */
+
+exports.attrs = function attrs(obj, escaped){
+  var buf = []
+    , terse = obj.terse;
+
+  delete obj.terse;
+  var keys = Object.keys(obj)
+    , len = keys.length;
+
+  if (len) {
+    buf.push('');
+    for (var i = 0; i < len; ++i) {
+      var key = keys[i]
+        , val = obj[key];
+
+      if ('boolean' == typeof val || null == val) {
+        if (val) {
+          terse
+            ? buf.push(key)
+            : buf.push(key + '="' + key + '"');
+        }
+      } else if (0 == key.indexOf('data') && 'string' != typeof val) {
+        buf.push(key + "='" + JSON.stringify(val) + "'");
+      } else if ('class' == key && Array.isArray(val)) {
+        buf.push(key + '="' + exports.escape(val.join(' ')) + '"');
+      } else if (escaped && escaped[key]) {
+        buf.push(key + '="' + exports.escape(val) + '"');
+      } else {
+        buf.push(key + '="' + val + '"');
+      }
+    }
+  }
+
+  return buf.join(' ');
+};
+
+/**
+ * Escape the given string of `html`.
+ *
+ * @param {String} html
+ * @return {String}
+ * @api private
+ */
+
+exports.escape = function escape(html){
+  return String(html)
+    .replace(/&(?!(\w+|\#\d+);)/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;');
+};
+
+/**
+ * Re-throw the given `err` in context to the
+ * the jade in `filename` at the given `lineno`.
+ *
+ * @param {Error} err
+ * @param {String} filename
+ * @param {String} lineno
+ * @api private
+ */
+
+exports.rethrow = function rethrow(err, filename, lineno){
+  if (!filename) throw err;
+
+  var context = 3
+    , str = require('fs').readFileSync(filename, 'utf8')
+    , lines = str.split('\n')
+    , start = Math.max(lineno - context, 0)
+    , end = Math.min(lines.length, lineno + context);
+
+  // Error context
+  var context = lines.slice(start, end).map(function(line, i){
+    var curr = i + start + 1;
+    return (curr == lineno ? '  > ' : '    ')
+      + curr
+      + '| '
+      + line;
+  }).join('\n');
+
+  // Alter exception message
+  err.path = filename;
+  err.message = (filename || 'Jade') + ':' + lineno
+    + '\n' + context + '\n\n' + err.message;
+  throw err;
+};
+
+  return exports;
+
+})({});
+});
 require.alias("home/index.js", "dummy/deps/home/index.js");
 require.alias("home/index.js", "home/index.js");
 
