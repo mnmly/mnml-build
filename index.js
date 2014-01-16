@@ -73,16 +73,21 @@ var build = exports.build = function(fn, dev) {
       
       builder.build(function(err, res){
         if (err) return done(err);
-        write(dir + '/build.js', res.require + res.js);
-        write(dir + '/build.css', res.css);
-        done();
+        var js = dir + '/build.js'; 
+        var css =dir + '/build.css'; 
+        write(js, res.require + res.js);
+        write(css, res.css);
+        done(null, {js: js, css: css});
       });
     });
   });
 
-  batch.end(function(errs){
-    if (errs) { return console.log(errs); }
-    fn && fn();
+  batch.end(function(errs, results){
+    if (errs) {
+      console.log(errs);
+      return fn && fn(errs);
+    }
+    fn && fn(null, results);
   });
 
 };
