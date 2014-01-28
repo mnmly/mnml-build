@@ -5,7 +5,7 @@
     "mkdirp": "*",
     "rework-vars": "*",
     "rework-math": "*",
-    "component-builder": "*",
+    "component-builder": "0.11.2",
     "component-styl": "*",
     "component-jade": "*",
     "batch": "*",
