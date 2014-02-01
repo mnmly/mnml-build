@@ -1,13 +1,13 @@
 {
   "name": "mnml-build",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "dependencies": {
     "mkdirp": "*",
     "rework-vars": "*",
     "rework-math": "*",
     "component-builder": "0.11.2",
     "component-styl": "*",
-    "component-jade": "*",
+    "component-jade": "0.5.0",
     "batch": "*",
     "rework-clearfix": "git+https://github.com/fgnass/rework-clearfix.git"
   }
