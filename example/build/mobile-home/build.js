@@ -53,13 +53,3 @@ require.define = function (name, exports) {
   };
 };
 
-require.register("home", function (exports, module) {
-module.exports = Home;
-
-function Home(){
-  console.log('Home');
-}
-
-
-});
-

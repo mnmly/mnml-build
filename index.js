@@ -1,93 +1,53 @@
-
 /**
- * Module dependencies.
+ * Module dependencies
  */
 
-var Builder = require('component-builder');
-var styl = require('component-styl');
-var jade = require('component-jade');
-
-var reworkVars = require('rework-vars');
-var reworkMath = require('rework-math');
-var reworkClearfix = require('rework-clearfix');
+var co = require('co');
+var fs = require('co-fs');
 var mkdir = require('mkdirp');
-
-var fs = require('fs');
-var read = fs.readFileSync;
-var write = fs.writeFileSync;
-var path = require('path');
-var meta = JSON.parse(read(process.cwd() + '/component.json'));
-var bundles = meta.local;
-var Batch = require('batch');
-var out = 'build';
+var rework = require('rework');
+var myth = require('myth');
+var Builder = require('component-builder2');
+var Resolver = require('component-resolver');
 
 /**
- * Component builder middleware.
+ * Building
  */
 
-exports = module.exports = function(req, res, next){
-  if (/build/.test(req.url)) {
-    return build(next, true);
-  } else {
-    next();
+co(function* build() {
+
+  var resolver = new Resolver(process.cwd(), {
+    install: true
+  });
+  
+  // resolve the dependency tree
+  var tree = yield* resolver.tree();
+
+  for(var k in tree.locals){
+
+    var bundle = k;
+
+    // lists the components in the proper build order
+    var nodes = resolver.flatten(tree.locals[k]);
+
+    // mkdir -p
+    mkdir.sync('build/' + bundle);
+
+    // only include `.js` files from components' `.scripts` field
+    var script = new Builder.scripts(nodes);
+    script.use('scripts', Builder.plugins.js());
+
+    // only include `.css` files from components' `.styles` field
+    var style = new Builder.styles(nodes);
+    style.use('styles', Builder.plugins.css());
+    style.use('styles', myth({whitespace: true}));
+
+    // write the builds to the following files in parallel
+    yield [
+      script.toFile('build/' + bundle + '/build.js'),
+      style.toFile('build/' + bundle + '/build.css')
+    ];
+
   }
-};
 
-/**
- * Build with bundle
- */
-
-var build = exports.build = function(fn, dev) {
-
-  var batch = new Batch();
-
-  bundles.forEach(function(bundle){
-    batch.push(function(done){
-
-      var dir = out + '/' + bundle;
-      var builder = new Builder('.');
-      mkdir.sync(dir);
-
-      builder.config.local = [bundle];
-
-      builder.addLookup('lib'); // TODO: shouldn't be necessary
-
-      if (dev) {
-        builder.development();
-        builder.addSourceURLs();
-      }
-
-      builder.copyAssetsTo(dir);
-      
-      /*
-       * Plugins
-       */
-
-      styl.plugins = [reworkMath(), reworkVars(), reworkClearfix];
-      builder.use(styl);
-      builder.use(jade);
-      
-      /**
-       * Build!
-       */
-      
-      builder.build(function(err, res){
-        if (err) return done(err);
-        var js = dir + '/build.js'; 
-        var css =dir + '/build.css'; 
-        write(js, res.require + res.js);
-        write(css, res.css);
-        done(null, {js: js, css: css});
-      });
-    });
-  });
-
-  batch.end(function(errs, results){
-    if (errs) {
-      console.log(errs);
-      return fn && fn(errs);
-    }
-    fn && fn(null, results);
-  });
-
-};
+})();

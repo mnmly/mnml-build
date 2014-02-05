@@ -3,7 +3,8 @@
   "paths": [
     "lib"
   ],
-  "local": [
-    "home"
+  "locals": [
+    "home",
+    "mobile-home"
   ]
 }

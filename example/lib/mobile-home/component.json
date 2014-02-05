@@ -1,0 +1,9 @@
+{
+  "name": "mobile-home",
+  "dependencies": {},
+  "scripts": [
+  ],
+  "styles":[
+    "mobile.css"
+  ]
+}
