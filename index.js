@@ -2,52 +2,97 @@
  * Module dependencies
  */
 
-var co = require('co');
-var fs = require('co-fs');
+var path = require('path');
 var mkdir = require('mkdirp');
-var rework = require('rework');
-var myth = require('myth');
 var Builder = require('component-builder2');
 var Resolver = require('component-resolver');
+var myth = require('builder-myth');
+var debug = require('debug')('simple-builder2:builder');
 
 /**
- * Building
+ * Retuns Generator Function that handles building component
+ *
+ * `params` can accept following options
+ *
+ * - `out`: output directory
+ * - `bundled`: if you want to build bundled component
+ * - `copy`: Copy files or symlink?
  */
 
-co(function* build() {
+module.exports = function(params){
 
-  var resolver = new Resolver(process.cwd(), {
-    install: true
-  });
-  
-  // resolve the dependency tree
-  var tree = yield* resolver.tree();
+  params = params || {};
+  params.out = params.out || 'build';
 
-  for(var k in tree.locals){
+  var copy = params.copy;
 
-    var bundle = k;
+  return function*(){
+    
+    var resolver = new Resolver(process.cwd(), { install: true });
+    var tree = yield* resolver.tree();
+    var out = params.out;
 
-    // lists the components in the proper build order
-    var nodes = resolver.flatten(tree.locals[k]);
+    if(!params.bundled){
+      debug('Building component to %s', out);
+      yield buildBundle(resolver, tree, out);
+    } else {
+      for(var bundle in tree.locals){
+        debug('Building a bundle: %s', bundle);
+        out = path.resolve(params.out, bundle);
+        yield buildBundle(resolver, tree.locals[bundle], out);
+      }
+    }
+  };
+
+  function* buildBundle(resolver, tree, out){
 
     // mkdir -p
-    mkdir.sync('build/' + bundle);
+    mkdir.sync(out);
 
-    // only include `.js` files from components' `.scripts` field
+    var nodes = resolver.flatten(tree); 
+
+    /**
+     * Builders
+     */
+
     var script = new Builder.scripts(nodes);
+    var style = new Builder.styles(nodes);
+    var file = new Builder.files(nodes, {dest: out});
+
+    /**
+     * Script Plugin(s)
+     */
+
     script.use('scripts', Builder.plugins.js());
 
-    // only include `.css` files from components' `.styles` field
-    var style = new Builder.styles(nodes);
+    /**
+     * Style Plugins
+     *
+     * - `myth`: Enables `myth`
+     * - `urlRewriter`: Rewrite `url()` rules in css
+     */
+
     style.use('styles', Builder.plugins.css());
-    style.use('styles', myth({whitespace: true}));
+    style.use('styles', myth({whitespace: false}));
+    style.use('styles', Builder.plugins.urlRewriter());
+    
+    /**
+     * File Plugins
+     */
 
-    // write the builds to the following files in parallel
+    file.use('images', Builder.plugins[copy ? 'copy' : 'symlink']());
+
+    /**
+     * Yield all :)
+     */
+
     yield [
-      script.toFile('build/' + bundle + '/build.js'),
-      style.toFile('build/' + bundle + '/build.css')
+      script.toFile(path.resolve(out, 'build.js')),
+      style.toFile(path.resolve(out, 'build.css')),
+      file.end()
     ];
-
   }
+};
 
-})();
+
+module.middleware = require('./middleware');

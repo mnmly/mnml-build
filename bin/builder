@@ -1,17 +1,19 @@
-#!/usr/bin/env node
+#!/usr/bin/env node --harmony
 
 /**
  * Module Dependencies
  */
 
-var build = require('./../').build;
-var dev = '--dev' === process.argv[2];
+var build = require('./../');
+var bundled = '--bundled' === process.argv[2];
+var co = require('co');
+var params = {
+  copy: true,
+  bundled: bundled
+};
 
 /**
  * Build
  */
 
-build(function(e) {
-  if (e) process.stderr.write(e);
-  else process.stdout.write('successfully built components\n');
-}, dev);
+co(build(params))();
