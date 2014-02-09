@@ -19,7 +19,7 @@ var debug = require('debug')('simple-builder2:builder');
  * - `copy`: Copy files or symlink?
  */
 
-module.exports = function(params){
+exports = module.exports = function(params){
 
   params = params || {};
   params.out = params.out || 'build';
@@ -95,4 +95,4 @@ module.exports = function(params){
 };
 
 
-module.middleware = require('./middleware');
+exports.middleware = require('./middleware');
