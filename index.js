@@ -1,7 +1,7 @@
 /**
  * Module dependencies
  */
-
+var fs = require('fs');
 var path = require('path');
 var mkdir = require('mkdirp');
 var Builder = require('component-builder2');
