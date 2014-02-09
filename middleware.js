@@ -16,8 +16,8 @@ module.exports = function(params){
   var build = builder(params);
 
   return function*(next){
-    yield next;
     if(assetRegExp.test(this.url)) yield build;
+    yield next;
   };
 
 };
