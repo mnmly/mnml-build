@@ -17,6 +17,7 @@ var debug = require('debug')('simple-builder2:builder');
  * - `out`: output directory
  * - `bundled`: if you want to build bundled component
  * - `copy`: Copy files or symlink?
+ * - `replace`: If you need to replace some content forcefully
  */
 
 exports = module.exports = function(params){
@@ -64,6 +65,14 @@ exports = module.exports = function(params){
      */
 
     script.use('scripts', Builder.plugins.js());
+
+    if(params.replace){
+      script.use('scripts', function(file, next){
+        var js = fs.readFileSync(file.filename, 'utf8');
+        file.string = params.replace(js);
+        next();
+      });
+    }
 
     /**
      * Style Plugins
