@@ -88,8 +88,9 @@ exports = module.exports = function(params){
     /**
      * File Plugins
      */
-
-    file.use('images', Builder.plugins[copy ? 'copy' : 'symlink']());
+    var filePlugin = Builder.plugins[copy ? 'copy' : 'symlink'];
+    file.use('images', filePlugin());
+    file.use('fonts', filePlugin());
 
     /**
      * Yield all :)
