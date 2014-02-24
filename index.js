@@ -5,9 +5,10 @@ var fs = require('fs');
 var path = require('path');
 var mkdir = require('mkdirp');
 var Builder = require('component-builder2');
-var Resolver = require('component-resolver');
+var resolve = require('component-resolver');
 var myth = require('builder-myth');
 var debug = require('debug')('simple-builder2:builder');
+var flatten = require('component-flatten');
 
 /**
  * Retuns Generator Function that handles building component
@@ -29,28 +30,27 @@ exports = module.exports = function(params){
 
   return function*(){
     
-    var resolver = new Resolver(process.cwd(), { install: true });
-    var tree = yield* resolver.tree();
+    var tree = yield* resolve(process.cwd(), { install: true });
     var out = params.out;
 
     if(!params.bundled){
       debug('Building component to %s', out);
-      yield buildBundle(resolver, tree, out);
+      yield buildBundle(tree, out);
     } else {
       for(var bundle in tree.locals){
         debug('Building a bundle: %s', bundle);
         out = path.resolve(params.out, bundle);
-        yield buildBundle(resolver, tree.locals[bundle], out);
+        yield buildBundle(tree.locals[bundle], out);
       }
     }
   };
 
-  function* buildBundle(resolver, tree, out){
+  function* buildBundle(tree, out){
 
     // mkdir -p
     mkdir.sync(out);
 
-    var nodes = resolver.flatten(tree); 
+    var nodes = flatten(tree); 
 
     /**
      * Builders
@@ -106,3 +106,4 @@ exports = module.exports = function(params){
 
 
 exports.middleware = require('./middleware');
+
