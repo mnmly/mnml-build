@@ -4,11 +4,11 @@
 var fs = require('fs');
 var path = require('path');
 var mkdir = require('mkdirp');
-var Builder = require('component-builder2');
-var resolve = require('component-resolver');
-var myth = require('builder-myth');
-var debug = require('debug')('simple-builder2:builder');
 var flatten = require('component-flatten');
+var resolve = require('component-resolver');
+var Builder = require('component-builder2');
+var myth = require('builder-myth');
+var debug = require('debug')('mnml-build:builder');
 
 /**
  * Retuns Generator Function that handles building component
@@ -19,12 +19,14 @@ var flatten = require('component-flatten');
  * - `bundled`: if you want to build bundled component
  * - `copy`: Copy files or symlink?
  * - `replace`: If you need to replace some content forcefully
+ * - `dev`: Dev or not
  */
 
 exports = module.exports = function(params){
 
   params = params || {};
   params.out = params.out || 'build';
+  params.dev = params.dev || false;
 
   var copy = params.copy;
 
@@ -55,10 +57,9 @@ exports = module.exports = function(params){
     /**
      * Builders
      */
-
-    var script = new Builder.scripts(nodes);
-    var style = new Builder.styles(nodes);
-    var file = new Builder.files(nodes, {dest: out});
+    var script = new Builder.scripts(nodes, {dev: dev});
+    var style = new Builder.styles(nodes, {dev: dev});
+    var file = new Builder.files(nodes, {dest: out, dev: dev});
 
     /**
      * Script Plugin(s)
