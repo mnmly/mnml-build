@@ -26,8 +26,8 @@ exports = module.exports = function(params){
 
   params = params || {};
   params.out = params.out || 'build';
-  params.dev = params.dev || false;
 
+  var dev = params.dev || false;
   var copy = params.copy;
 
   return function*(){
