@@ -55,6 +55,8 @@ var build = exports.build = function(fn, dev) {
       if (dev) {
         builder.development();
         builder.addSourceURLs();
+      } else {
+        builder.copyFiles();
       }
 
       builder.copyAssetsTo(dir);
