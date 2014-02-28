@@ -1,10 +1,10 @@
 {
   "name": "mnml-build",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "dependencies": {
-    "component-builder2": "*",
+    "component-builder2": "git://github.com/component/builder2.js",
     "component-resolver": "git://github.com/component/resolver.js",
-    "component-flatten": "*",
+    "component-flatten": "git://github.com/component/flatten.js",
     "co": "~3.0.2",
     "mkdirp": "~0.3.5",
     "rework": "~0.20.2",
