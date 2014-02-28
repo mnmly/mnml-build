@@ -9,7 +9,6 @@
     "mkdirp": "~0.3.5",
     "rework": "~0.20.2",
     "builder-myth": "git://github.com/mnmly/builder-myth",
-    "remotes": "git://github.com/component/remotes.js",
     "debug": "~0.7.4"
   },
   "readme": "# mnml-build\n\nThis is a personal component build, that generates bundled js / css files. \n\nIt supports `.jade` for template and CSS is pre-processed by `.styl` on top of `rework-vars`, `rework-math`.\n\n### Usage\n\n```javascript\n/**\n * Module dependencies.\n */\n\nvar express = require('express');\nvar path = require('path');\nvar http = require('http');\nvar app = module.exports = express();\nvar port = process.env.PORT || 3000;\nvar server = http.createServer(app);\n\n// all environments\napp.use(express.errorHandler());\n\n/**\n * Mount\n */\n\napp.use('/build', require('mnml-build'));\napp.use('/build', express.static(path.join(__dirname, 'build'))); // Place static server after build\n\nserver.listen(port, function() {\n  console.log('listening on port %s', port);\n});\n```\n\n### Run example\n\n```\n$ cd example\n$ node server.js\n$ open http://localhost:3000/build/home/build.js\n```\n",
