@@ -66,6 +66,7 @@ exports = module.exports = function(params){
      */
 
     script.use('scripts', Builder.plugins.js());
+    script.use('templates', Builder.plugins.string());
 
     if(params.replace){
       script.use('scripts', function(file, next){
