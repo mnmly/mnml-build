@@ -5,12 +5,37 @@
  */
 
 var build = require('./../');
-var bundled = '--bundled' === process.argv[2];
+var program = require('commander');
+var pkg = require('./../package.json');
+
+program
+  .version(pkg.version)
+  .option('-d, --dev', 'Development build')
+  .option('-b, --bundled', 'Bundled build');
+
+program.on('--help', function(){
+  console.log('  Examples:');
+  console.log('');
+  console.log('    # normal build');
+  console.log('    $ ./bin/builder');
+  console.log('');
+  console.log('    # dev build');
+  console.log('    $ ./bin/builder --dev');
+  console.log('');
+  console.log('    # bundled build');
+  console.log('    $ ./bin/builder --bundled');
+  console.log('');
+});
+
+program.parse(process.argv);
+
 var co = require('co');
 var params = {
   copy: true,
-  bundled: bundled
+  bundled: program.bundled,
+  dev: program.dev
 };
+
 
 /**
  * Build
