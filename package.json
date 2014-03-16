@@ -1,25 +1,20 @@
 {
   "name": "mnml-build",
-  "version": "0.0.5",
+  "version": "0.1.0",
   "dependencies": {
-    "component-builder2": "git://github.com/component/builder2.js",
-    "component-resolver": "git://github.com/component/resolver.js",
-    "component-flatten": "git://github.com/component/flatten.js",
+    "component-builder2": "~0.2.2",
+    "component-resolver": "~0.2.1",
+    "component-flatten": "~0.0.1",
     "co": "~3.0.2",
     "mkdirp": "~0.3.5",
-    "rework": "~0.20.2",
-    "builder-myth": "git://github.com/mnmly/builder-myth",
+    "builder-myth": "~0.0.3",
     "debug": "~0.7.4"
   },
   "readme": "# mnml-build\n\nThis is a personal component build, that generates bundled js / css files. \n\nIt supports `.jade` for template and CSS is pre-processed by `.styl` on top of `rework-vars`, `rework-math`.\n\n### Usage\n\n```javascript\n/**\n * Module dependencies.\n */\n\nvar express = require('express');\nvar path = require('path');\nvar http = require('http');\nvar app = module.exports = express();\nvar port = process.env.PORT || 3000;\nvar server = http.createServer(app);\n\n// all environments\napp.use(express.errorHandler());\n\n/**\n * Mount\n */\n\napp.use('/build', require('mnml-build'));\napp.use('/build', express.static(path.join(__dirname, 'build'))); // Place static server after build\n\nserver.listen(port, function() {\n  console.log('listening on port %s', port);\n});\n```\n\n### Run example\n\n```\n$ cd example\n$ node server.js\n$ open http://localhost:3000/build/home/build.js\n```\n",
   "readmeFilename": "README.md",
   "description": "This is a personal component build, that generates bundled js / css files.",
-  "_id": "mnml-build@0.0.3",
-  "dist": {
-    "shasum": "d61f43b326bf1c4cacd41ca7fe24e99d36c8e2ec"
-  },
-  "_resolved": "git+https://github.com/mnmly/mnml-build.git#bbe02424ccfc461858d55c9ce721e00d264ac7f2",
-  "_from": "mnml-build@git+https://github.com/mnmly/mnml-build.git#feature/builder2",
   "devDependencies": {
+    "koa": "*",
+    "koa-static": "*"
   }
 }
