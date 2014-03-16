@@ -32,7 +32,7 @@ exports = module.exports = function(params){
 
   return function*(){
     
-    var tree = yield* resolve(process.cwd(), { install: true });
+    var tree = yield* resolve(process.cwd(), { install: true, dev: dev });
     var out = params.out;
 
     if(!params.bundled){
