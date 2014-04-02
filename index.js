@@ -4,9 +4,9 @@
 var fs = require('fs');
 var path = require('path');
 var mkdir = require('mkdirp');
-var flatten = require('component-flatten');
 var resolve = require('component-resolver');
-var Builder = require('component-builder2');
+var flatten = resolve.flatten;
+var Builder = require('component-builder');
 var myth = require('builder-myth');
 var debug = require('debug')('mnml-build:builder');
 
@@ -97,10 +97,17 @@ exports = module.exports = function(params){
     /**
      * Yield all :)
      */
+    var write = function(p, str){
+      return function(done){
+        return fs.writeFile(p, str, 'utf-8', done);
+      };
+    };
+
+    var js = Builder.scripts.require;
 
     yield [
-      script.toFile(path.resolve(out, 'build.js')),
-      style.toFile(path.resolve(out, 'build.css')),
+      write(path.resolve(out, 'build.js'), js += yield script.end()),
+      write(path.resolve(out, 'build.css'), yield style.end()),
       file.end()
     ];
   }
