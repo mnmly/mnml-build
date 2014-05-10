@@ -4,7 +4,9 @@
   "scripts": [
     "index.js"
   ],
-  "styles":[],
+  "styles":[
+    "deps.css"
+  ],
   "locals": [],
   "paths": []
 }

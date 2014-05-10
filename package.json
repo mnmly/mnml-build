@@ -1,11 +1,12 @@
 {
   "name": "mnml-build",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "dependencies": {
     "component-builder": "^1.1.5",
     "component-resolver": "^1.1.1",
     "co": "~3.0.3",
-    "builder-myth": "~0.0.4",
+    "rework": "~0.20.2",
+    "myth": "~0.3.0",
     "debug": "*",
     "commander": "~2.1.0",
     "mkdirp": "~0.3.5"

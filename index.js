@@ -3,11 +3,12 @@
  */
 var fs = require('fs');
 var path = require('path');
+var myth = require('myth');
+var rework = require('rework');
 var mkdir = require('mkdirp');
 var resolve = require('component-resolver');
 var flatten = resolve.flatten;
 var Builder = require('component-builder');
-var myth = require('builder-myth');
 var debug = require('debug')('mnml-build:builder');
 
 /**
@@ -84,7 +85,6 @@ exports = module.exports = function(params){
      */
 
     style.use('styles', Builder.plugins.css());
-    style.use('styles', myth({whitespace: false}));
     style.use('styles', Builder.plugins.urlRewriter());
     
     /**
@@ -94,9 +94,6 @@ exports = module.exports = function(params){
     file.use('images', filePlugin());
     file.use('fonts', filePlugin());
 
-    /**
-     * Yield all :)
-     */
     var write = function(p, str){
       return function(done){
         return fs.writeFile(p, str, 'utf-8', done);
@@ -104,10 +101,17 @@ exports = module.exports = function(params){
     };
 
     var js = Builder.scripts.require;
+    var css = yield style.end();
+
+    js += yield script.end();
+    css = rework(css).use(myth).toString({
+      compress: dev ? false : true,
+      sourcemap: dev ? true : false
+    });
 
     yield [
-      write(path.resolve(out, 'build.js'), js += yield script.end()),
-      write(path.resolve(out, 'build.css'), yield style.end()),
+      write(path.resolve(out, 'build.js'), js),
+      write(path.resolve(out, 'build.css'), css),
       file.end()
     ];
   }
