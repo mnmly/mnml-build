@@ -5,7 +5,7 @@
     "component-builder": "^1.1.5",
     "component-resolver": "^1.1.1",
     "co": "~3.0.3",
-    "builder-myth": "~0.0.3",
+    "builder-myth": "~0.0.4",
     "debug": "*",
     "commander": "~2.1.0",
     "mkdirp": "~0.3.5"
