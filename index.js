@@ -104,7 +104,7 @@ exports = module.exports = function(params){
     var css = yield style.end();
 
     js += yield script.end();
-    css = rework(css).use(myth).toString({
+    css = rework(css).use(myth()).toString({
       compress: dev ? false : true,
       sourcemap: dev ? true : false
     });
