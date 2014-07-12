@@ -18,7 +18,7 @@ var middleware = require('./../').middleware;
 app.use(middleware({dev: true, bundled: true}));
 app.use(serve(__dirname + '/build'));
 app.use(function *(){
-  this.body = '<!DOCTYPE html><script src="/home/build.js"></script>' + 
+  this.body = '<!DOCTYPE html><link rel="stylesheet" href="/home/build.css"><script src="/home/build.js"></script>' + 
               '<script>require("home");</script>';
 });
 

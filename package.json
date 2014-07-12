@@ -1,15 +1,15 @@
 {
   "name": "mnml-build",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "dependencies": {
-    "component-builder": "^1.1.5",
-    "component-resolver": "^1.1.1",
-    "co": "~3.0.3",
-    "rework": "~0.20.2",
-    "myth": "~0.3.0",
+    "component-builder": "^1.1.7",
+    "component-resolver": "^1.1.6",
+    "co": "^3.0.6",
+    "rework": "~1.0.0",
+    "myth": "~1.0.4",
     "debug": "*",
-    "commander": "~2.1.0",
-    "mkdirp": "~0.3.5"
+    "commander": "~2.2.0",
+    "mkdirp": "~0.5.0"
   },
   "bin": {
     "builder": "./bin/builder"

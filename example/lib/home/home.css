@@ -1,7 +1,10 @@
 :root {
-  var-purple: #847AD1;
+  --purple: #847AD1;
+  --link-padding: 10px;
 }
 
 a {
-  color: var(purple);
+  color: var(--purple);
+  display: inline-block;
+  padding: var(--link-padding);
 }

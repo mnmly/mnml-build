@@ -9,6 +9,7 @@ var mkdir = require('mkdirp');
 var resolve = require('component-resolver');
 var flatten = resolve.flatten;
 var Builder = require('component-builder');
+var previewPlugin = require('./lib/preview-plugin');
 var debug = require('debug')('mnml-build:builder');
 
 /**
@@ -30,6 +31,7 @@ exports = module.exports = function(params){
 
   var dev = params.dev || false;
   var copy = params.copy;
+  var preview = params.preview || {};
 
   return function*(){
     
@@ -67,6 +69,7 @@ exports = module.exports = function(params){
      */
 
     script.use('scripts', Builder.plugins.js());
+    script.use('scripts', previewPlugin(preview));
     script.use('templates', Builder.plugins.string());
 
     if(params.replace){
@@ -85,6 +88,7 @@ exports = module.exports = function(params){
      */
 
     style.use('styles', Builder.plugins.css());
+    style.use('styles', previewPlugin(preview));
     style.use('styles', Builder.plugins.urlRewriter());
     
     /**
@@ -104,10 +108,15 @@ exports = module.exports = function(params){
     var css = yield style.end();
 
     js += yield script.end();
-    css = rework(css).use(myth()).toString({
-      compress: dev ? false : true,
-      sourcemap: dev ? true : false
-    });
+
+    try {
+      css = rework(css).use(myth()).toString({
+        compress: dev ? false : true,
+        sourcemap: dev ? true : false
+      });
+    } catch (e) {
+      console.log(e);
+    }
 
     yield [
       write(path.resolve(out, 'build.js'), js),
