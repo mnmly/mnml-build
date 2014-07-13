@@ -70,7 +70,10 @@ exports = module.exports = function(params){
 
     script.use('scripts', Builder.plugins.js());
     script.use('scripts', previewPlugin(preview));
+    script.use('shaders', Builder.plugins.string());
+    script.use('shaders', previewPlugin(preview));
     script.use('templates', Builder.plugins.string());
+    script.use('templates', previewPlugin(preview));
 
     if(params.replace){
       script.use('scripts', function(file, next){
